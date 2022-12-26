@@ -29,7 +29,8 @@ class CommuterBlissUKView extends WatchUi.View {
 	const DATE_Y_OFFSET_ARC = -32;
 	const JOURNEY_Y_OFFSET_TEXT = 110;
 	const JOURNEY_Y_OFFSET_ARC = 32;
-	
+	const CLEAR_LOADING_AREA_OFFSET = 6 * TRAIN_INFO_HEIGHT + 10;
+
 	var ARC_WIDTH = 20;
 	var VIEW_MODE = VIEW_TEXT;
 	
@@ -118,7 +119,7 @@ class CommuterBlissUKView extends WatchUi.View {
 				if (VIEW_MODE == VIEW_TEXT) {
 		//			dc.setColor(Graphics.COLOR_ORANGE, Graphics.COLOR_BLACK);
 					dc.fillRectangle(0, 0, width, START_Y);
-					dc.fillRectangle(0, START_Y + 92, width, height);
+					dc.fillRectangle(0, START_Y + CLEAR_LOADING_AREA_OFFSET, width, height);
 		//			dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_BLACK);
 				}
 				else {

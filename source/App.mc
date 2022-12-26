@@ -24,6 +24,10 @@ var selectStations = [
 class CommuterBlissUKApp extends Application.AppBase {
 
 	const URL_BASE = "https://hate-snake.glitch.me/";
+
+	// enable UI testing by mocking the response from the server
+	// must be set to "false" for production builds
+	const ENABLE_MOCKED_DATA = true;
 	
 	var myTimer;
 	var train_data;
@@ -36,6 +40,41 @@ class CommuterBlissUKApp extends Application.AppBase {
 		bank_size = selectStations.size();
 	}
 
+	function mockService(i) {
+		var unixTimeNow = Time.now().value();
+		var nextTime = unixTimeNow + 1000 * i;
+		var delayed = false;
+		var delayedMinutes = i;
+		if (i > 1 && i < 4) {
+			delayedMinutes = i;
+			delayed = true;
+		}
+
+		return {
+			"time" => nextTime,
+			"from" => "EUS",
+			"to" => "PRE",
+			"time_to_walk" => 0,
+			"cancelled" => false,
+			"platform" => "1",
+			"delayed" => delayed,
+			"service_ID" => "123",
+			"unique_ID" => "EUSPRE123",
+			"origin_CRS" => "EUS",
+			"destination_CRS" => "PRE",
+			"current_dest_time" => nextTime + 20 * 60 + delayedMinutes * 60,
+			"delayed_minutes" => delayedMinutes,
+		};
+	}
+
+	function mockResponse() {
+		var services = {"services"=>[]};
+		for (var i = 0; i < 6; i++) {
+			services["services"].add(mockService(i));
+		}
+		return services;
+	}
+
 	// set up the response callback function
 	function onReceive(responseCode, data) {
 		request_active = false;
@@ -44,7 +83,12 @@ class CommuterBlissUKApp extends Application.AppBase {
 //		System.println(data);
 
 		if (responseCode == 200) {
-			train_data = data;
+			if (ENABLE_MOCKED_DATA) {
+				train_data = mockResponse();
+			}
+			else {
+				train_data = data;
+			}
 		}
 		else {
 			train_data = {"services"=>[]};
