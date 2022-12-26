@@ -1,0 +1,46 @@
+<resources>
+	<properties>
+		<property id="selectStations" type="array"></property>
+		<property id="swapStations" type="boolean">false</property>
+		<!-- <property id="srcDefault" type="string">GLQ</property>
+		<property id="destDefault" type="string">EDB</property> -->
+	</properties>
+	
+	<strings>
+		<string id="selectStationTitle">Station selection</string>
+		<string id="swapStationsTitle">Swap stations in the afternoon</string>
+		<string id="srcTitle">Source station</string>
+		<string id="destTitle">Destination station</string>
+		<string id="srcDefault">GLQ</string>
+		<string id="destDefault">EDB</string>
+	</strings>
+	
+	<settings>
+		<setting propertyKey="@Properties.selectStations" title="@Strings.selectStationTitle" maxLength="12">
+			<setting title="@Strings.srcTitle" type="string">
+				<settingConfig id="src" type="alphaNumeric" maxLength="3"/>
+			</setting>
+			<setting title="@Strings.destTitle" type="string">
+				<settingConfig id="dest" type="alphaNumeric" maxLength="3"/>
+			</setting>
+			<defaults>
+				<entry>
+					<default id="src">@String.srcDefault</default>
+					<default id="dest">@String.destDefault</default>
+				</entry>
+				<entry>
+					<default id="src">@String.srcDefault</default>
+					<default id="dest">@String.destDefault</default>
+				</entry>
+				<entry>
+					<default id="src">@String.srcDefault</default>
+					<default id="dest">@String.destDefault</default>
+				</entry>
+			</defaults>
+		</setting>
+
+		<setting propertyKey="@Properties.swapStations" title="@Strings.swapStationsTitle">
+			<settingConfig type="boolean" />
+		</setting>
+	</settings>
+</resources>

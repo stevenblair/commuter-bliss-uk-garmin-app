@@ -1,0 +1,5 @@
+<layout id="MainLayout">
+    <!-- <bitmap id="id_monkey" x="center" y="center" filename="../drawables/monkey.png" />
+	<label text="Page Heading" x="100" y="50" font="Gfx.FONT_LARGE" color="Gfx.COLOR_DK_GRAY" />
+	<label text="Your information goes here." x="100" y="100" font="Gfx.FONT_MEDIUM" color="Gfx.COLOR_DK_GRAY" /> -->
+</layout>
