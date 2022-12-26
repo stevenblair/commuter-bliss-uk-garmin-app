@@ -29,7 +29,7 @@ class CommuterBlissUKView extends WatchUi.View {
 	const START_Y = 95;
 
 	// UI component positions
-	const BATTERY_Y = 8;
+	const BATTERY_Y = 6;
 	const TRAIN_INFO_HEIGHT = 17;
 	const TIME_Y_OFFSET = -23;
 	const DATE_Y_OFFSET_TEXT = -72;
@@ -122,12 +122,12 @@ class CommuterBlissUKView extends WatchUi.View {
     	
 		dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_BLACK);
 		
-		var view_has_changed = false;
+		var viewHasChanged = false;
 		
 		if (changeViewMode == true) {
 			dc.clear();
 			changeViewMode = false;
-			view_has_changed = true;
+			viewHasChanged = true;
 		}
 		else {
 			// do selective clear to avoid removing trains - data may still be valid
@@ -141,7 +141,7 @@ class CommuterBlissUKView extends WatchUi.View {
 				else {
 					// TODO clear a circle - rectangle below "next: ..." might be better
 //					dc.setColor(Graphics.COLOR_ORANGE, Graphics.COLOR_BLACK);
-					dc.fillCircle(width_2, height_2, 69);
+					dc.fillCircle(width_2, height_2, 72);
 //					dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_BLACK);
 				}
 			}
@@ -222,7 +222,7 @@ class CommuterBlissUKView extends WatchUi.View {
 			        Graphics.TEXT_JUSTIFY_CENTER);
 	    	}
 	    	
-	    	if (view_has_changed == false) {
+	    	if (viewHasChanged == false) {
 		    	return;
 		    }
     	}
