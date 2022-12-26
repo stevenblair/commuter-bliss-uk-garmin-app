@@ -5,6 +5,7 @@ using Toybox.Time;
 using Toybox.Time.Gregorian;
 using Toybox.Sensor;
 
+// supported view modes
 enum {
     VIEW_TEXT,
     VIEW_ARCS
@@ -12,50 +13,65 @@ enum {
 
 class CommuterBlissUKView extends WatchUi.View {
 
+	// storage for the screen size
 	var width, height;
+
+	// storage for half the screen size (for positioning relative to the centre)
 	var width_2, height_2;
 	
-	var train_data = null;
+	// local reference to the train data
+	var trainData = null;
 	
 	const SECONDS_IN_59_MINUTES = 3540;
 	
-	// defines the starting coordinates for the first train info. other elements are positioned relative to this
+	// defines the starting coordinates for the first train info, other elements are positioned relative to this
 	const START_X = 45;
-	const START_Y = 100;
+	const START_Y = 95;
 
-	const BATTERY_Y = 9;
-	const TRAIN_INFO_HEIGHT = 16;
-	const DATE_Y_OFFSET_TEXT = -75;
+	// UI component positions
+	const BATTERY_Y = 8;
+	const TRAIN_INFO_HEIGHT = 17;
+	const TIME_Y_OFFSET = -23;
+	const DATE_Y_OFFSET_TEXT = -72;
 	const DATE_Y_OFFSET_ARC = -32;
-	const JOURNEY_Y_OFFSET_TEXT = 110;
+	const JOURNEY_Y_OFFSET_TEXT = 115;
 	const JOURNEY_Y_OFFSET_ARC = 32;
-	const CLEAR_LOADING_AREA_OFFSET = 6 * TRAIN_INFO_HEIGHT + 10;
+	const CLEAR_LOADING_AREA_OFFSET = $.SERVICES_TO_DISPLAY * TRAIN_INFO_HEIGHT + 8;
+	const ARC_WIDTH = 20;
 
-	var ARC_WIDTH = 20;
-	var VIEW_MODE = VIEW_TEXT;
+	// defines if the view mode has been requested to change
+	var changeViewMode = false;
+
+	// specify the default view mode
+	var viewMode = VIEW_TEXT;
 	
+	// store font
 	var wee_numbers;
 	
+	// lateness threshold for showing amber colour instead of red
 	const DELAYED_SLIGHTLY_THRESHOLD_MINUTES = 2;
 	
+	// colours for train status
 	const COLOUR_ON_TIME = 0x009900;
 	const COLOUR_DELAYED = 0xFF0000;
 	const COLOUR_DELAYED_SLIGHTLY = 0xFF7700;
 	
+	// colours for train status (where the train should have departed already)
 	const COLOUR_IN_THE_PAST_ON_TIME = 0x003300;
 	const COLOUR_IN_THE_PAST_DELAYED = 0x330000;
 	
-	var bank_dot_width = 60;//44;
-	var bank_dot_start = 0;
-	var bank_dot_spacing = 0;
+	// indicators for selected "bank" of trains
+	const BANK_DOT_WIDTH = 50;
+	var bankDotStart = 0;
+	var bankDotSpacing = 0;
 	
-    function set_view_mode() {
-    	$.change_view_mode = true;
-    	if (VIEW_MODE == VIEW_TEXT) {
-    		VIEW_MODE = VIEW_ARCS;
+    function setViewMode() {
+    	changeViewMode = true;
+    	if (viewMode == VIEW_TEXT) {
+    		viewMode = VIEW_ARCS;
     	}
-    	else if (VIEW_MODE == VIEW_ARCS) {
-    		VIEW_MODE = VIEW_TEXT;
+    	else if (viewMode == VIEW_ARCS) {
+    		viewMode = VIEW_TEXT;
     	}
 		WatchUi.requestUpdate();
     }
@@ -73,11 +89,11 @@ class CommuterBlissUKView extends WatchUi.View {
         width_2 = width / 2;
         height_2 = height / 2;
         
-		bank_dot_start = width_2 - bank_dot_width / 2;
-		if (bank_size <= 1) {
-			bank_dot_spacing = bank_dot_width / 2;
+		bankDotStart = width_2 - BANK_DOT_WIDTH / 2;
+		if (bankSize <= 1) {
+			bankDotSpacing = BANK_DOT_WIDTH / 2;
 		} else {
-			bank_dot_spacing = bank_dot_width / (bank_size - 1);
+			bankDotSpacing = BANK_DOT_WIDTH / (bankSize - 1);
 		}
 
 	    dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_BLACK);
@@ -102,21 +118,21 @@ class CommuterBlissUKView extends WatchUi.View {
 
     // update the view
     function onUpdate(dc) {
-//    	System.println("onUpdate(), " + Application.getApp().train_data);
+//    	System.println("onUpdate(), " + Application.getApp().trainData);
     	
 		dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_BLACK);
 		
 		var view_has_changed = false;
 		
-		if ($.change_view_mode == true) {
+		if (changeViewMode == true) {
 			dc.clear();
-			$.change_view_mode = false;
+			changeViewMode = false;
 			view_has_changed = true;
 		}
 		else {
 			// do selective clear to avoid removing trains - data may still be valid
-			if ($.request_active) {
-				if (VIEW_MODE == VIEW_TEXT) {
+			if ($.requestActive) {
+				if (viewMode == VIEW_TEXT) {
 		//			dc.setColor(Graphics.COLOR_ORANGE, Graphics.COLOR_BLACK);
 					dc.fillRectangle(0, 0, width, START_Y);
 					dc.fillRectangle(0, START_Y + CLEAR_LOADING_AREA_OFFSET, width, height);
@@ -142,7 +158,7 @@ class CommuterBlissUKView extends WatchUi.View {
         
 //        System.println(clockTime.dst);
 
-		var journey_text = Application.getApp().using_src + " to " + Application.getApp().using_dest;
+		var journey_text = Application.getApp().usingSrc + " to " + Application.getApp().usingDest;
         
 		if ($.selectStations == null || $.selectStations.size() == 0) {
 			journey_text = "Select stations in app";
@@ -150,9 +166,9 @@ class CommuterBlissUKView extends WatchUi.View {
         
 	    dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_TRANSPARENT);
 		var time_y = height_2;
-        if (VIEW_MODE == VIEW_TEXT) {
+        if (viewMode == VIEW_TEXT) {
 			dc.drawText(width_2, START_Y + DATE_Y_OFFSET_TEXT, Graphics.FONT_SMALL, date_string, Graphics.TEXT_JUSTIFY_CENTER);
-			time_y = START_Y - 26;
+			time_y = START_Y + TIME_Y_OFFSET;
 			
 			dc.drawText(width_2, START_Y + JOURNEY_Y_OFFSET_TEXT, Graphics.FONT_XTINY, journey_text, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
 		}
@@ -165,9 +181,9 @@ class CommuterBlissUKView extends WatchUi.View {
 	    dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
 		dc.drawText(width_2, time_y, Graphics.FONT_NUMBER_MEDIUM, time_string, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
 		
-//			System.println(train_data);
+//			System.println(trainData);
 
-        if (VIEW_MODE == VIEW_TEXT) {
+        if (viewMode == VIEW_TEXT) {
 	        var battery = Sys.getSystemStats().battery;
 	        if (battery > 15) {
 	    		dc.setColor(Graphics.COLOR_DK_GRAY, Graphics.COLOR_TRANSPARENT);
@@ -186,12 +202,12 @@ class CommuterBlissUKView extends WatchUi.View {
 		        Graphics.TEXT_JUSTIFY_CENTER);
        }
 
-    	if ($.request_active) {
-    		var bank_offset = 0;
-    		if (VIEW_MODE == VIEW_ARCS) {
-    			bank_offset = 58;
+    	if ($.requestActive) {
+    		var bankOffset = 0;
+    		if (viewMode == VIEW_ARCS) {
+    			bankOffset = 58;
     		}
-	    	for (var d = 0; d < $.bank_size; d++) {
+	    	for (var d = 0; d < $.bankSize; d++) {
 	    		if (d == $.bank) {
 			    	dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
 			    }
@@ -199,8 +215,8 @@ class CommuterBlissUKView extends WatchUi.View {
 			    	dc.setColor(Graphics.COLOR_DK_GRAY, Graphics.COLOR_TRANSPARENT);
 			    }
 		        dc.drawText(
-			        bank_dot_start + bank_dot_spacing * d,
-			        214 - bank_offset,
+			        bankDotStart + bankDotSpacing * d,
+			        214 - bankOffset,
 			        Graphics.FONT_SYSTEM_TINY,
 			        "•",
 			        Graphics.TEXT_JUSTIFY_CENTER);
@@ -214,12 +230,12 @@ class CommuterBlissUKView extends WatchUi.View {
 //		var today = Gregorian.info(Time.now(), Time.FORMAT_MEDIUM);
 //        System.println("onUpdate() " + today.min + "m, " + today.sec + "s");
     
-        var temp = Application.getApp().train_data;
+        var temp = Application.getApp().trainData;
 		
         if (temp != null && temp instanceof Dictionary) {
-        	train_data = temp;
+        	trainData = temp;
         
-			var len = train_data.get("services").size();
+			var len = trainData.get("services").size();
 			
 			// TODO make one_hour conditional on dst or timeZoneOffset, or use UTCInfo function
 
@@ -234,11 +250,11 @@ class CommuterBlissUKView extends WatchUi.View {
 			var now_seconds2 = now_value % 60;
 			now2 = new Time.Moment(now_value2 - now_seconds2);
 			
-			if (len > 0 && VIEW_MODE == VIEW_ARCS) {
-				var next_to = train_data.get("services")[0].get("destination_CRS");
+			if (len > 0 && viewMode == VIEW_ARCS) {
+				var next_to = trainData.get("services")[0].get("destination_CRS");
 				var service_text4 = "";
-				if (train_data.get("services")[0].get("platform") != null) {
-					service_text4 = " (" + train_data.get("services")[0].get("platform") + ")";
+				if (trainData.get("services")[0].get("platform") != null) {
+					service_text4 = " (" + trainData.get("services")[0].get("platform") + ")";
 				}
 				
 	    		dc.setColor(Graphics.COLOR_DK_GRAY, Graphics.COLOR_TRANSPARENT);
@@ -252,7 +268,7 @@ class CommuterBlissUKView extends WatchUi.View {
 			
         	for (var i = len - 1; i >= 0; i--) {
         		var in_the_past = false;
-        		var service = train_data.get("services")[i];
+        		var service = trainData.get("services")[i];
 				
 //		    	dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
 	
@@ -296,7 +312,7 @@ class CommuterBlissUKView extends WatchUi.View {
 		    		seconds_to_go_arrive = SECONDS_IN_59_MINUTES;
 		    	}
 		    	
-				if (VIEW_MODE == VIEW_ARCS) {
+				if (viewMode == VIEW_ARCS) {
 				    if (service.get("delayed") == true) {
 			    		if (service.get("delayed_minutes") <= DELAYED_SLIGHTLY_THRESHOLD_MINUTES) {
 		    				dc.setColor(COLOUR_DELAYED_SLIGHTLY, Graphics.COLOR_TRANSPARENT);
@@ -370,7 +386,7 @@ class CommuterBlissUKView extends WatchUi.View {
 		        	
 		        	prev_minutes_to_go = minutes_to_go;
 		      	}
-	        	else if (VIEW_MODE == VIEW_TEXT) {
+	        	else if (viewMode == VIEW_TEXT) {
 //	        		System.println(i + " delay: " + service.get("delayed"));
 				    if (service.get("delayed") == true) {
 			    		

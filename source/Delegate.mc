@@ -13,7 +13,7 @@ class CommuterBlissUKAppDelegate extends WatchUi.BehaviorDelegate {
 //        System.println(keyEvent.getKey());
 
 		if (keyEvent.getKey() == KEY_ENTER) {
-	        view_.set_view_mode();
+	        view_.setViewMode();
 	        
 			Application.getApp().timerCallback();
         	return true;
@@ -21,21 +21,21 @@ class CommuterBlissUKAppDelegate extends WatchUi.BehaviorDelegate {
 		else if (keyEvent.getKey() == KEY_UP) {
 			$.bank = $.bank - 1;
 			if ($.bank < 0) {
-				$.bank = $.bank_size - 1;
+				$.bank = $.bankSize - 1;
 			}
 	        
-			Application.getApp().train_data = {"services"=>[]};
+			Application.getApp().trainData = {"services"=>[]};
 			view_.requestUpdate();
 			Application.getApp().timerCallback();
         	return true;
 		}
 		else if (keyEvent.getKey() == KEY_DOWN) {
 			$.bank = $.bank + 1;
-			if ($.bank == $.bank_size) {
+			if ($.bank == $.bankSize) {
 				$.bank = 0;
 			}
 	        
-			Application.getApp().train_data = {"services"=>[]};
+			Application.getApp().trainData = {"services"=>[]};
 			view_.requestUpdate();
 			Application.getApp().timerCallback();
         	return true;

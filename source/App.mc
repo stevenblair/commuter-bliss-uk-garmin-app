@@ -1,28 +1,33 @@
 using Toybox.Application;
 using Toybox.WatchUi;
-
 using Toybox.Communications;
 using Toybox.Timer;
 using Toybox.Time;
 using Toybox.Time.Gregorian;
 using Toybox.Lang;
 
-var bank = 0;
-var bank_size = 1;
+// the maximum number of services to display on the watch face
+const SERVICES_TO_DISPLAY = 6;
 
-var request_active = false;
-var change_view_mode = false;
+// defines if a data request to the server is currently active
+var requestActive = false;
 
-var train_data;
-
+// local copy of selected routes defined in the app settings
 var selectStations = [
 	{"src" => "EUS", "dest" => "PRE"},
 	{"src" => "GLQ", "dest" => "EDB"},
 	{"src" => "PRE", "dest" => "MAN"},
 ] as Lang.Array<Lang.Dictionary<Lang.String,Lang.String>>;
 
+// the index of the selected "bank" of stations to use
+var bank = 0;
+
+// maximum number of banks, automatically defined by the size of the selectStations array
+var bankSize = 1;
+
 class CommuterBlissUKApp extends Application.AppBase {
 
+	// the base URL for the server which provides the train data
 	const URL_BASE = "https://hate-snake.glitch.me/";
 
 	// enable UI testing by mocking the response from the server
@@ -30,24 +35,27 @@ class CommuterBlissUKApp extends Application.AppBase {
 	const ENABLE_MOCKED_DATA = true;
 	
 	var myTimer;
-	var train_data;
-	var using_src;
-	var using_dest;
+	var trainData;
+	var usingSrc;
+	var usingDest;
 
 	function initialize() {
 		AppBase.initialize();
 		
-		bank_size = selectStations.size();
+		bankSize = selectStations.size();
 	}
 
 	function mockService(i) {
 		var unixTimeNow = Time.now().value();
-		var nextTime = unixTimeNow + 1000 * i;
+		var nextTime = unixTimeNow + 1000 * i + 2 * 60;
 		var delayed = false;
-		var delayedMinutes = i;
+		var delayedMinutes = 0;
+		var platform = "1";
+
 		if (i > 1 && i < 4) {
 			delayedMinutes = i;
 			delayed = true;
+			platform = "12a";
 		}
 
 		return {
@@ -56,7 +64,7 @@ class CommuterBlissUKApp extends Application.AppBase {
 			"to" => "PRE",
 			"time_to_walk" => 0,
 			"cancelled" => false,
-			"platform" => "1",
+			"platform" => platform,
 			"delayed" => delayed,
 			"service_ID" => "123",
 			"unique_ID" => "EUSPRE123",
@@ -69,7 +77,7 @@ class CommuterBlissUKApp extends Application.AppBase {
 
 	function mockResponse() {
 		var services = {"services"=>[]};
-		for (var i = 0; i < 6; i++) {
+		for (var i = 0; i < SERVICES_TO_DISPLAY; i++) {
 			services["services"].add(mockService(i));
 		}
 		return services;
@@ -77,21 +85,21 @@ class CommuterBlissUKApp extends Application.AppBase {
 
 	// set up the response callback function
 	function onReceive(responseCode, data) {
-		request_active = false;
+		requestActive = false;
 		
 //		System.println("responseCode: " + responseCode);
 //		System.println(data);
 
 		if (responseCode == 200) {
 			if (ENABLE_MOCKED_DATA) {
-				train_data = mockResponse();
+				trainData = mockResponse();
 			}
 			else {
-				train_data = data;
+				trainData = data;
 			}
 		}
 		else {
-			train_data = {"services"=>[]};
+			trainData = {"services"=>[]};
 		}
 		
 		WatchUi.requestUpdate();
@@ -106,15 +114,15 @@ class CommuterBlissUKApp extends Application.AppBase {
 		}
 		
 		if (selectStations != null && selectStations.size() > 0) {
-			using_src = selectStations[bank].get("src");
-			using_dest = selectStations[bank].get("dest");
+			usingSrc = selectStations[bank].get("src");
+			usingDest = selectStations[bank].get("dest");
 			
 			if (Application.Properties.getValue("swapStations") == true && (today.hour >= 12 || today.hour < 2)) {
-				using_src = selectStations[bank].get("dest");
-				using_dest = selectStations[bank].get("src");
+				usingSrc = selectStations[bank].get("dest");
+				usingDest = selectStations[bank].get("src");
 			}
 			
-			var url = URL_BASE + "?src=" + using_src + "&dest=" + using_dest;
+			var url = URL_BASE + "?src=" + usingSrc + "&dest=" + usingDest;
 			
 	//        System.println("timerCallback() " + today.min + "m, " + today.sec + "s");
 	//    	System.println(url);
@@ -125,7 +133,7 @@ class CommuterBlissUKApp extends Application.AppBase {
 				:responseType => Communications.HTTP_RESPONSE_CONTENT_TYPE_JSON
 			};
 
-			request_active = true;
+			requestActive = true;
 			Communications.makeWebRequest(url, params, options, method(:onReceive));
 		}
 	}
@@ -137,8 +145,7 @@ class CommuterBlissUKApp extends Application.AppBase {
 		if (selectStationsSaved != null) {
 			selectStations = [];
 
-			// copy properties to a local array and do
-			// simple validation to make the station codes uppercase
+			// copy properties to a local array and do simple validation to make the station codes uppercase
 			for (var i = 0; i < selectStationsSaved.size(); i++) {
 				var route = selectStationsSaved[i];
 				route["src"] = route.get("src").toUpper();
@@ -146,9 +153,11 @@ class CommuterBlissUKApp extends Application.AppBase {
 				selectStations.add(route);
 			}
 
-			bank_size = selectStations.size();
+			bankSize = selectStations.size();
 		}
 		// System.println(selectStations);
+
+		// save the edited settings into the application properties
 		Application.Properties.setValue("selectStations", selectStations);
 	}
 	
