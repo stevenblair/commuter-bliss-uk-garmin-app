@@ -47,7 +47,7 @@ class CommuterBlissUKApp extends Application.AppBase {
 
 	function mockService(i) {
 		var unixTimeNow = Time.now().value();
-		var nextTime = unixTimeNow + 1000 * i + 2 * 60;
+		var nextTime = unixTimeNow + 1000 * i - 2 * 60;
 		var delayed = false;
 		var delayedMinutes = 0;
 		var platform = "1";
