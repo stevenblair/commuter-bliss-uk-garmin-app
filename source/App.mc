@@ -14,9 +14,9 @@ var requestActive = false;
 
 // local copy of selected routes defined in the app settings
 var selectStations = [
-	{"src" => "EUS", "dest" => "PRE"},
+	{"src" => "EUS", "dest" => "WFJ"},
 	{"src" => "GLQ", "dest" => "EDB"},
-	{"src" => "PRE", "dest" => "MAN"},
+	{"src" => "PRE", "dest" => "MIA"},
 ] as Lang.Array<Lang.Dictionary<Lang.String,Lang.String>>;
 
 // the index of the selected "bank" of stations to use
@@ -32,7 +32,7 @@ class CommuterBlissUKApp extends Application.AppBase {
 
 	// enable UI testing by mocking the response from the server
 	// must be set to "false" for production builds
-	const ENABLE_MOCKED_DATA = true;
+	const ENABLE_MOCKED_DATA = false;
 	
 	var myTimer;
 	var trainData;
@@ -108,9 +108,9 @@ class CommuterBlissUKApp extends Application.AppBase {
 	function timerCallback() {
 		var today = Gregorian.info(Time.now(), Time.FORMAT_MEDIUM);
 		if (myTimer != null) {
-			var seconds_to_go = 60 - today.sec;
-//	    	System.println("onStart(), seconds_to_go: " + seconds_to_go);
-			myTimer.start(method(:timerCallback), seconds_to_go * 1000, false);
+			var secondsToGo = 60 - today.sec;
+//	    	System.println("onStart(), secondsToGo: " + secondsToGo);
+			myTimer.start(method(:timerCallback), secondsToGo * 1000, false);
 		}
 		
 		if (selectStations != null && selectStations.size() > 0) {
@@ -171,11 +171,11 @@ class CommuterBlissUKApp extends Application.AppBase {
 		// TODO When dealing with date type settings that are set by Garmin Express or Garmin Connect, one should note that times are stored in UTC and that Gregorian.utcInfo() should be used in place of Gregorian.info() when working with such values to prevent unnecessary local time conversion.
 		
 		var today = Gregorian.info(Time.now(), Time.FORMAT_MEDIUM);
-		var seconds_to_go = 60 - today.sec;
-//	    System.println("onStart(), seconds_to_go: " + seconds_to_go);
+		var secondsToGo = 60 - today.sec;
+//	    System.println("onStart(), secondsToGo: " + secondsToGo);
 		
 		myTimer = new Timer.Timer();
-		myTimer.start(method(:timerCallback), seconds_to_go * 1000, false);
+		myTimer.start(method(:timerCallback), secondsToGo * 1000, false);
 	}
 
 	// onStop() is called when the application is exiting
