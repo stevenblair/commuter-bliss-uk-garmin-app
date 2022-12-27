@@ -1,5 +1,6 @@
 <resources>
 	<properties>
+		<property id="selectStationsHeader" type="string"></property>
 		<property id="selectStations" type="array"></property>
 		<property id="swapStations" type="boolean">false</property>
 		<!-- <property id="srcDefault" type="string">GLQ</property>
@@ -8,7 +9,8 @@
 	
 	<strings>
 		<string id="selectStationTitle">Station selection</string>
-		<string id="swapStationsTitle">Swap stations in the afternoon</string>
+		<string id="selectStationPrompt">Configure a set of routes between two stations. Up to 12 routes can be specified, and these can be selected within the app using the Up and Down keys on the watch. Stations are specified using the three-character station code, such as "EUS" or "PAD". The app will try to find up to the next six direct services for the selected source and destination stations. The app doesn't check that a route is valid, so it won't show any routes if there are no available direct services between the selected stations. Uppercase or lowercase text can be used.</string>
+		<string id="swapStationsTitle">Swap stations automatically in the afternoon</string>
 		<string id="srcTitle">Source station</string>
 		<string id="destTitle">Destination station</string>
 		<string id="srcDefault">GLQ</string>
@@ -16,6 +18,10 @@
 	</strings>
 	
 	<settings>
+	    <setting propertyKey="@Properties.selectStationsHeader" title="@Strings.selectStationPrompt">
+			<settingConfig type="alphaNumeric" readonly="true" />
+		</setting>
+
 		<setting propertyKey="@Properties.selectStations" title="@Strings.selectStationTitle" maxLength="12">
 			<setting title="@Strings.srcTitle" type="string">
 				<settingConfig id="src" type="alphaNumeric" maxLength="3"/>
