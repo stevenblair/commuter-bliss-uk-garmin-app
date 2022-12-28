@@ -28,7 +28,7 @@ var bankSize = 1;
 class CommuterBlissUKApp extends Application.AppBase {
 
 	// the base URL for the server which provides the train data
-	const URL_BASE = "https://hate-snake.glitch.me/";
+	const URL_BASE = "https://hate-snake-smkbh4euqq-nw.a.run.app/";
 
 	// enable UI testing by mocking the response from the server
 	// must be set to "false" for production builds
