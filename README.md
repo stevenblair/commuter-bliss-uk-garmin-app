@@ -2,7 +2,7 @@
 
 A Garmin watch app for UK rail commuters.
 
-This is a rewrite of the original [Pebble Time watchface]( https://github.com/stevenblair/commuter-bliss-uk) for Garmin devices. At the moment, the Forerunner 245 and Forerunner 245 Music are supported.
+This is a rewrite of the original [Pebble Time watchface]( https://github.com/stevenblair/commuter-bliss-uk) for Garmin devices. At the moment, the Forerunner 245 and Forerunner 245 Music are supported, but other devices will be added.
 
 ## Features
 
