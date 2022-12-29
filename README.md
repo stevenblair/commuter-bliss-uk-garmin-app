@@ -14,7 +14,7 @@ There are two display modes: text list of services, or the graphical view which 
 
 The app also shows the time and date in a clear and sensible way for UK users.
 
-## Settings
+## App settings
 
 * The app settings can be used to configure up to 12 sets of routes between two stations. These can be selected within the app using the `Up` and `Down` keys on the watch. Stations are specified using the three-character station code, such as "EUS" or "PAD". The app will try to find up to the next six direct services for the selected source and destination stations. The app doesn't check that a route is valid, so it won't show any routes if there are no available direct services between the selected stations. Uppercase or lowercase text can be used in the settings dialog.
 * The app can be configured to automatically swap the direction of the stations in the afternoon, so that your normal home-to-work journeys to be shown in the morning, and work-to-home routes will be shown after midday.
