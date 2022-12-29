@@ -1,6 +1,6 @@
 <resources>
 	<properties>
-		<property id="selectStationsHeader" type="string"></property>
+		<!-- <property id="selectStationsHeader" type="string"></property> -->
 		<property id="selectStations" type="array"></property>
 		<property id="swapStations" type="boolean">false</property>
 		<!-- <property id="srcDefault" type="string">GLQ</property>
@@ -18,9 +18,9 @@
 	</strings>
 	
 	<settings>
-	    <setting propertyKey="@Properties.selectStationsHeader" title="@Strings.selectStationPrompt">
+	    <!-- <setting propertyKey="@Properties.selectStationsHeader" title="@Strings.selectStationPrompt">
 			<settingConfig type="alphaNumeric" readonly="true" />
-		</setting>
+		</setting> -->
 
 		<setting propertyKey="@Properties.selectStations" title="@Strings.selectStationTitle" maxLength="12">
 			<setting title="@Strings.srcTitle" type="string">
