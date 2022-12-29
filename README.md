@@ -4,9 +4,7 @@ A Garmin watch app for UK rail commuters.
 
 This is a rewrite of the original [Pebble Time watchface]( https://github.com/stevenblair/commuter-bliss-uk) for Garmin devices. At the moment, the Forerunner 245 and Forerunner 245 Music are supported, but other devices will be added.
 
- 1 |  2  |  3  |  4
---- | --- | --- | ---
-![1](https://user-images.githubusercontent.com/785994/209987692-c00e7e8a-69da-43fa-ad80-fbaa9876bfad.png)  | ![2](https://user-images.githubusercontent.com/785994/209987700-85dd3a8c-8f57-47af-af95-37e32866cda2.png) | ![3](https://user-images.githubusercontent.com/785994/209987713-e618330b-56dc-45dc-ba68-df2e302ea097.png) | ![4](https://user-images.githubusercontent.com/785994/209987719-97ad62ff-e832-4afa-b119-0f1076b4fab8.png)
+![5](https://user-images.githubusercontent.com/785994/209989510-13d6abb7-da7a-4480-ab42-06b1b023afda.png)
 
 ## Features
 
@@ -17,6 +15,10 @@ You can specify your normal home and work railway stations using the app setting
 There are two display modes: text list of services, or the graphical view which shows each train service as an arc around the watch. Use the `Start/Stop` key to 
 
 The app also shows the time and date in a clear and sensible way for UK users.
+
+ 1 |  2  |  3  |  4
+--- | --- | --- | ---
+![1](https://user-images.githubusercontent.com/785994/209987692-c00e7e8a-69da-43fa-ad80-fbaa9876bfad.png)  | ![2](https://user-images.githubusercontent.com/785994/209987700-85dd3a8c-8f57-47af-af95-37e32866cda2.png) | ![3](https://user-images.githubusercontent.com/785994/209987713-e618330b-56dc-45dc-ba68-df2e302ea097.png) | ![4](https://user-images.githubusercontent.com/785994/209987719-97ad62ff-e832-4afa-b119-0f1076b4fab8.png)
 
 ## App settings
 
