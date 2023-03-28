@@ -237,11 +237,11 @@ class CommuterBlissUKView extends WatchUi.View {
 		
 			var len = trainData.get("services").size();
 			
-			// TODO make oneHour conditional on dst or timeZoneOffset, or use UTCInfo function
-
+			var systemTime = System.getClockTime();
 			var oneHour = new Time.Duration(Gregorian.SECONDS_PER_HOUR);
 			var now = Time.now();
-			var now_value = now.value() /*+ oneHour.value()*/;
+			var now_value = now.value() + systemTime.dst;	// systemTime.dst makes `now_value` conditional based on the DST offset
+
 			var now_seconds = now_value % 60;
 			now = new Time.Moment(now_value - now_seconds);
 			

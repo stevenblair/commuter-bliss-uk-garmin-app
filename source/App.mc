@@ -168,7 +168,9 @@ class CommuterBlissUKApp extends Application.AppBase {
 		
 		timerCallback();
 
-		// TODO When dealing with date type settings that are set by Garmin Express or Garmin Connect, one should note that times are stored in UTC and that Gregorian.utcInfo() should be used in place of Gregorian.info() when working with such values to prevent unnecessary local time conversion.
+		// TODO When dealing with date type settings that are set by Garmin Express or Garmin Connect,
+		//      one should note that times are stored in UTC and that Gregorian.utcInfo() should be used in place of Gregorian.info()
+		//      when working with such values to prevent unnecessary local time conversion.
 		
 		var today = Gregorian.info(Time.now(), Time.FORMAT_MEDIUM);
 		var secondsToGo = 60 - today.sec;
