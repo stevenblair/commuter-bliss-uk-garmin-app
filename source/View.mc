@@ -240,7 +240,11 @@ class CommuterBlissUKView extends WatchUi.View {
 			var systemTime = System.getClockTime();
 			var oneHour = new Time.Duration(Gregorian.SECONDS_PER_HOUR);
 			var now = Time.now();
-			var now_value = now.value() + systemTime.dst;	// systemTime.dst makes `now_value` conditional based on the DST offset
+			var now_value = now.value() + systemTime.timeZoneOffset;	// systemTime.timeZoneOffset makes `now_value` conditional based on the DST offset
+
+			// System.println("dst = " + systemTime.dst);
+			// System.println("timeZoneOffset = " + systemTime.timeZoneOffset);
+			// System.println("oneHour.value() = " + oneHour.value());
 
 			var now_seconds = now_value % 60;
 			now = new Time.Moment(now_value - now_seconds);
