@@ -238,7 +238,7 @@ class CommuterBlissUKView extends WatchUi.View {
 			var len = trainData.get("services").size();
 			
 			var systemTime = System.getClockTime();
-			var oneHour = new Time.Duration(Gregorian.SECONDS_PER_HOUR);
+			// var oneHour = new Time.Duration(Gregorian.SECONDS_PER_HOUR);
 			var now = Time.now();
 			var now_value = now.value() + systemTime.timeZoneOffset;	// systemTime.timeZoneOffset makes `now_value` conditional based on the DST offset
 
@@ -249,10 +249,10 @@ class CommuterBlissUKView extends WatchUi.View {
 			var now_seconds = now_value % 60;
 			now = new Time.Moment(now_value - now_seconds);
 			
-			var now2 = Time.now();
-			var now_value2 = now.value() + oneHour.value();
-			var now_seconds2 = now_value % 60;
-			now2 = new Time.Moment(now_value2 - now_seconds2);
+			// var now2 = Time.now();
+			// var now_value2 = now.value() + oneHour.value();
+			// var now_seconds2 = now_value % 60;
+			// now2 = new Time.Moment(now_value2 - now_seconds2);
 			
 			if (len > 0 && viewMode == VIEW_ARCS) {
 				var next_to = trainData.get("services")[0].get("destination_CRS");
@@ -276,7 +276,7 @@ class CommuterBlissUKView extends WatchUi.View {
 				
 //		    	dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
 	
-				var clockTime = Sys.getClockTime();
+				// var clockTime = Sys.getClockTime();
 				// var timeStringService = Lang.format("$1$:$2$", [clockTime.hour, clockTime.min.format("%02d")]);
 				
 				var leaveTime = new Time.Moment(service.get("time")/* - oneHour.value()*/);
@@ -290,8 +290,11 @@ class CommuterBlissUKView extends WatchUi.View {
 //				System.println(i + ": " + oneHour.value() + " " + leaveTime.value());
 				var date = Gregorian.info(leaveTime, 0);
 				date.sec = 0;
+				if (systemTime.timeZoneOffset > 0) {
+					date.hour = date.hour - 1; // make this conditional on systemTime.timeZoneOffset
+				}
 				
-//				System.println(i + ": " + leaveTime.value() + ", " + now.value() + ", diff: " + (leaveTime.value() - now.value()));
+				// System.println(i + ": " + leaveTime.value() + ", " + now.value() + ", diff: " + (leaveTime.value() - now.value()) + ", " + systemTime.timeZoneOffset);
 				
 				var secondsToGo = leaveTime.subtract(now).value();
 				var minutesToGo = secondsToGo / 60;
