@@ -4,6 +4,7 @@ using Toybox.Lang as Lang;
 using Toybox.Time;
 using Toybox.Time.Gregorian;
 using Toybox.Sensor;
+using Toybox.Weather as Weath;
 
 // supported view modes
 enum {
@@ -191,14 +192,16 @@ class CommuterBlissUKView extends WatchUi.View {
 			else {
 				dc.setColor(Graphics.COLOR_RED, Graphics.COLOR_TRANSPARENT);
 			}
+
+			var cc = Weath.getCurrentConditions();
 			
-			var batteryString = battery.toNumber() + "%";
+			var batteryAndTemperatureString = battery.toNumber() + "%  " + cc.temperature.format("%.0f") + "°C";
 			
 			dc.drawText(
 				WIDTH_2,
 				BATTERY_Y,
 				Graphics.FONT_SYSTEM_XTINY,
-				batteryString,
+				batteryAndTemperatureString,
 				Graphics.TEXT_JUSTIFY_CENTER);
 	   }
 

@@ -1,7 +1,7 @@
 <drawables>
     <bitmap id="LauncherIcon" filename="launcher_icon.png">
-    	<palette>
+    	<!-- <palette>
     		<color>000000</color>
-    	</palette>
+    	</palette> -->
     </bitmap>
 </drawables>
