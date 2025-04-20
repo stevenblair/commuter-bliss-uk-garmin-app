@@ -195,7 +195,7 @@ class CommuterBlissUKView extends WatchUi.View {
 
 			var cc = Weath.getCurrentConditions();
 			
-			var batteryAndTemperatureString = battery.toNumber() + "%  " + cc.temperature.format("%.0f") + "°C";
+			var batteryAndTemperatureString = battery.toNumber() + "%  " + cc.feelsLikeTemperature.format("%.0f") + "°C";
 			
 			dc.drawText(
 				WIDTH_2,
